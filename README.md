@@ -31,3 +31,4 @@ http://localhost:8000/api/schema/swagger-ui/
 ### Mailhog
 
 http://localhost:1025
+# talana-test

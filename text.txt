@@ -1,0 +1,1053 @@
+[1m============================= test session starts ==============================[0m
+platform linux -- Python 3.10.4, pytest-6.2.4, py-1.11.0, pluggy-0.13.1
+django: settings: safari.settings (from ini)
+rootdir: /code, configfile: pytest.ini
+plugins: django-4.4.0, mock-3.6.1
+[1mcollecting ... [0m[1mcollected 21 items                                                             [0m
+
+adventure/tests/test_03_controllers.py [31mE[0m[31mE[0m[31mE[0m[31mE[0m[31m                              [ 19%][0m
+adventure/tests/test_01_entities.py [32m.[0m[32m.[0m[32m.[0m[33ms[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                             [ 57%][0m
+adventure/tests/test_02_usecases.py [32m.[0m[32m.[0m[32m.[0m[31m                                  [ 71%][0m
+adventure/tests/test_03_controllers.py [32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[32m.[0m[31m                            [100%][0m
+
+==================================== ERRORS ====================================
+[31m[1m_______________ ERROR at setup of TestGetVehicleAPIView.test_get _______________[0m
+
+self = <django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>
+
+    @async_unsafe
+    def ensure_connection(self):
+        """Guarantee that a connection to the database is established."""
+        if self.connection is None:
+            with self.wrap_database_errors:
+>               self.connect()
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:219: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>,)
+kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+        if not os.environ.get('DJANGO_ALLOW_ASYNC_UNSAFE'):
+            # Detect a running event loop in this thread.
+            try:
+                event_loop = get_running_loop()
+            except RuntimeError:
+                pass
+            else:
+                if PY37 or event_loop.is_running():
+                    raise SynchronousOnlyOperation(message)
+        # Pass onwards.
+>       return func(*args, **kwargs)
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>
+
+    @async_unsafe
+    def connect(self):
+        """Connect to the database. Assume that the connection is closed."""
+        # Check for invalid configurations.
+        self.check_settings()
+        # In case the previous connection was closed while in an atomic block
+        self.in_atomic_block = False
+        self.savepoint_ids = []
+        self.needs_rollback = False
+        # Reset parameters defining when to close the connection
+        max_age = self.settings_dict['CONN_MAX_AGE']
+        self.close_at = None if max_age is None else time.monotonic() + max_age
+        self.closed_in_transaction = False
+        self.errors_occurred = False
+        # Establish the connection
+        conn_params = self.get_connection_params()
+>       self.connection = self.get_new_connection(conn_params)
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:200: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>, {'database': 'postgres', 'host': 'db', 'password': 'postgres', 'port': 5432, ...})
+kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+        if not os.environ.get('DJANGO_ALLOW_ASYNC_UNSAFE'):
+            # Detect a running event loop in this thread.
+            try:
+                event_loop = get_running_loop()
+            except RuntimeError:
+                pass
+            else:
+                if PY37 or event_loop.is_running():
+                    raise SynchronousOnlyOperation(message)
+        # Pass onwards.
+>       return func(*args, **kwargs)
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>
+conn_params = {'database': 'postgres', 'host': 'db', 'password': 'postgres', 'port': 5432, ...}
+
+    @async_unsafe
+    def get_new_connection(self, conn_params):
+>       connection = Database.connect(**conn_params)
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/postgresql/base.py[0m:187: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'user=postgres password=postgres host=db port=5432 dbname=postgres'
+connection_factory = None, cursor_factory = None
+kwargs = {'database': 'postgres', 'host': 'db', 'password': 'postgres', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+[1m[31mE       psycopg2.OperationalError: could not translate host name "db" to address: Temporary failure in name resolution[0m
+
+[1m[31m/usr/local/lib/python3.10/site-packages/psycopg2/__init__.py[0m:122: OperationalError
+
+[33mThe above exception was the direct cause of the following exception:[0m
+
+request = <SubRequest '_django_db_marker' for <Function test_get>>
+
+    @pytest.fixture(autouse=True)
+    def _django_db_marker(request) -> None:
+        """Implement the django_db marker, internal to pytest-django.
+    
+        This will dynamically request the ``db``, ``transactional_db`` or
+        ``django_db_reset_sequences`` fixtures as required by the django_db marker.
+        """
+        marker = request.node.get_closest_marker("django_db")
+        if marker:
+            transaction, reset_sequences, databases = validate_django_db(marker)
+    
+            # TODO: Use pytest Store (item.store) once that's stable.
+            request.node._pytest_django_databases = databases
+    
+            if reset_sequences:
+                request.getfixturevalue("django_db_reset_sequences")
+            elif transaction:
+                request.getfixturevalue("transactional_db")
+            else:
+>               request.getfixturevalue("db")
+
+[1m[31m/usr/local/lib/python3.10/site-packages/pytest_django/plugin.py[0m:470: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+[1m[31m/usr/local/lib/python3.10/site-packages/pytest_django/fixtures.py[0m:117: in django_db_setup
+    db_cfg = setup_databases(
+[1m[31m/usr/local/lib/python3.10/site-packages/django/test/utils.py[0m:179: in setup_databases
+    connection.creation.create_test_db(
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/creation.py[0m:57: in create_test_db
+    self._create_test_db(verbosity, autoclobber, keepdb)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/creation.py[0m:191: in _create_test_db
+    with self._nodb_cursor() as cursor:
+[1m[31m/usr/local/lib/python3.10/contextlib.py[0m:135: in __enter__
+    return next(self.gen)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/postgresql/base.py[0m:301: in _nodb_cursor
+    with super()._nodb_cursor() as cursor:
+[1m[31m/usr/local/lib/python3.10/contextlib.py[0m:135: in __enter__
+    return next(self.gen)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:620: in _nodb_cursor
+    with conn.cursor() as cursor:
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: in inner
+    return func(*args, **kwargs)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:259: in cursor
+    return self._cursor()
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:235: in _cursor
+    self.ensure_connection()
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: in inner
+    return func(*args, **kwargs)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:218: in ensure_connection
+    with self.wrap_database_errors:
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/utils.py[0m:90: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:219: in ensure_connection
+    self.connect()
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: in inner
+    return func(*args, **kwargs)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:200: in connect
+    self.connection = self.get_new_connection(conn_params)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: in inner
+    return func(*args, **kwargs)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/postgresql/base.py[0m:187: in get_new_connection
+    connection = Database.connect(**conn_params)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'user=postgres password=postgres host=db port=5432 dbname=postgres'
+connection_factory = None, cursor_factory = None
+kwargs = {'database': 'postgres', 'host': 'db', 'password': 'postgres', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+[1m[31mE       django.db.utils.OperationalError: could not translate host name "db" to address: Temporary failure in name resolution[0m
+
+[1m[31m/usr/local/lib/python3.10/site-packages/psycopg2/__init__.py[0m:122: OperationalError
+[31m[1m______ ERROR at setup of TestGetVehicleAPIView.test_get_by_license_plate _______[0m
+
+self = <django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>
+
+    @async_unsafe
+    def ensure_connection(self):
+        """Guarantee that a connection to the database is established."""
+        if self.connection is None:
+            with self.wrap_database_errors:
+>               self.connect()
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:219: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>,)
+kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+        if not os.environ.get('DJANGO_ALLOW_ASYNC_UNSAFE'):
+            # Detect a running event loop in this thread.
+            try:
+                event_loop = get_running_loop()
+            except RuntimeError:
+                pass
+            else:
+                if PY37 or event_loop.is_running():
+                    raise SynchronousOnlyOperation(message)
+        # Pass onwards.
+>       return func(*args, **kwargs)
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>
+
+    @async_unsafe
+    def connect(self):
+        """Connect to the database. Assume that the connection is closed."""
+        # Check for invalid configurations.
+        self.check_settings()
+        # In case the previous connection was closed while in an atomic block
+        self.in_atomic_block = False
+        self.savepoint_ids = []
+        self.needs_rollback = False
+        # Reset parameters defining when to close the connection
+        max_age = self.settings_dict['CONN_MAX_AGE']
+        self.close_at = None if max_age is None else time.monotonic() + max_age
+        self.closed_in_transaction = False
+        self.errors_occurred = False
+        # Establish the connection
+        conn_params = self.get_connection_params()
+>       self.connection = self.get_new_connection(conn_params)
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:200: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>, {'database': 'postgres', 'host': 'db', 'password': 'postgres', 'port': 5432, ...})
+kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+        if not os.environ.get('DJANGO_ALLOW_ASYNC_UNSAFE'):
+            # Detect a running event loop in this thread.
+            try:
+                event_loop = get_running_loop()
+            except RuntimeError:
+                pass
+            else:
+                if PY37 or event_loop.is_running():
+                    raise SynchronousOnlyOperation(message)
+        # Pass onwards.
+>       return func(*args, **kwargs)
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>
+conn_params = {'database': 'postgres', 'host': 'db', 'password': 'postgres', 'port': 5432, ...}
+
+    @async_unsafe
+    def get_new_connection(self, conn_params):
+>       connection = Database.connect(**conn_params)
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/postgresql/base.py[0m:187: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'user=postgres password=postgres host=db port=5432 dbname=postgres'
+connection_factory = None, cursor_factory = None
+kwargs = {'database': 'postgres', 'host': 'db', 'password': 'postgres', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+[1m[31mE       psycopg2.OperationalError: could not translate host name "db" to address: Temporary failure in name resolution[0m
+
+[1m[31m/usr/local/lib/python3.10/site-packages/psycopg2/__init__.py[0m:122: OperationalError
+
+[33mThe above exception was the direct cause of the following exception:[0m
+
+request = <SubRequest '_django_db_marker' for <Function test_get_by_license_plate>>
+
+    @pytest.fixture(autouse=True)
+    def _django_db_marker(request) -> None:
+        """Implement the django_db marker, internal to pytest-django.
+    
+        This will dynamically request the ``db``, ``transactional_db`` or
+        ``django_db_reset_sequences`` fixtures as required by the django_db marker.
+        """
+        marker = request.node.get_closest_marker("django_db")
+        if marker:
+            transaction, reset_sequences, databases = validate_django_db(marker)
+    
+            # TODO: Use pytest Store (item.store) once that's stable.
+            request.node._pytest_django_databases = databases
+    
+            if reset_sequences:
+                request.getfixturevalue("django_db_reset_sequences")
+            elif transaction:
+                request.getfixturevalue("transactional_db")
+            else:
+>               request.getfixturevalue("db")
+
+[1m[31m/usr/local/lib/python3.10/site-packages/pytest_django/plugin.py[0m:470: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+[1m[31m/usr/local/lib/python3.10/site-packages/pytest_django/fixtures.py[0m:117: in django_db_setup
+    db_cfg = setup_databases(
+[1m[31m/usr/local/lib/python3.10/site-packages/django/test/utils.py[0m:179: in setup_databases
+    connection.creation.create_test_db(
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/creation.py[0m:57: in create_test_db
+    self._create_test_db(verbosity, autoclobber, keepdb)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/creation.py[0m:191: in _create_test_db
+    with self._nodb_cursor() as cursor:
+[1m[31m/usr/local/lib/python3.10/contextlib.py[0m:135: in __enter__
+    return next(self.gen)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/postgresql/base.py[0m:301: in _nodb_cursor
+    with super()._nodb_cursor() as cursor:
+[1m[31m/usr/local/lib/python3.10/contextlib.py[0m:135: in __enter__
+    return next(self.gen)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:620: in _nodb_cursor
+    with conn.cursor() as cursor:
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: in inner
+    return func(*args, **kwargs)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:259: in cursor
+    return self._cursor()
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:235: in _cursor
+    self.ensure_connection()
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: in inner
+    return func(*args, **kwargs)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:218: in ensure_connection
+    with self.wrap_database_errors:
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/utils.py[0m:90: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:219: in ensure_connection
+    self.connect()
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: in inner
+    return func(*args, **kwargs)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:200: in connect
+    self.connection = self.get_new_connection(conn_params)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: in inner
+    return func(*args, **kwargs)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/postgresql/base.py[0m:187: in get_new_connection
+    connection = Database.connect(**conn_params)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'user=postgres password=postgres host=db port=5432 dbname=postgres'
+connection_factory = None, cursor_factory = None
+kwargs = {'database': 'postgres', 'host': 'db', 'password': 'postgres', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+[1m[31mE       django.db.utils.OperationalError: could not translate host name "db" to address: Temporary failure in name resolution[0m
+
+[1m[31m/usr/local/lib/python3.10/site-packages/psycopg2/__init__.py[0m:122: OperationalError
+[31m[1m_____________ ERROR at setup of TestGetServiceAreaAPIView.test_get _____________[0m
+
+self = <django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>
+
+    @async_unsafe
+    def ensure_connection(self):
+        """Guarantee that a connection to the database is established."""
+        if self.connection is None:
+            with self.wrap_database_errors:
+>               self.connect()
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:219: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>,)
+kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+        if not os.environ.get('DJANGO_ALLOW_ASYNC_UNSAFE'):
+            # Detect a running event loop in this thread.
+            try:
+                event_loop = get_running_loop()
+            except RuntimeError:
+                pass
+            else:
+                if PY37 or event_loop.is_running():
+                    raise SynchronousOnlyOperation(message)
+        # Pass onwards.
+>       return func(*args, **kwargs)
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>
+
+    @async_unsafe
+    def connect(self):
+        """Connect to the database. Assume that the connection is closed."""
+        # Check for invalid configurations.
+        self.check_settings()
+        # In case the previous connection was closed while in an atomic block
+        self.in_atomic_block = False
+        self.savepoint_ids = []
+        self.needs_rollback = False
+        # Reset parameters defining when to close the connection
+        max_age = self.settings_dict['CONN_MAX_AGE']
+        self.close_at = None if max_age is None else time.monotonic() + max_age
+        self.closed_in_transaction = False
+        self.errors_occurred = False
+        # Establish the connection
+        conn_params = self.get_connection_params()
+>       self.connection = self.get_new_connection(conn_params)
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:200: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>, {'database': 'postgres', 'host': 'db', 'password': 'postgres', 'port': 5432, ...})
+kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+        if not os.environ.get('DJANGO_ALLOW_ASYNC_UNSAFE'):
+            # Detect a running event loop in this thread.
+            try:
+                event_loop = get_running_loop()
+            except RuntimeError:
+                pass
+            else:
+                if PY37 or event_loop.is_running():
+                    raise SynchronousOnlyOperation(message)
+        # Pass onwards.
+>       return func(*args, **kwargs)
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>
+conn_params = {'database': 'postgres', 'host': 'db', 'password': 'postgres', 'port': 5432, ...}
+
+    @async_unsafe
+    def get_new_connection(self, conn_params):
+>       connection = Database.connect(**conn_params)
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/postgresql/base.py[0m:187: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'user=postgres password=postgres host=db port=5432 dbname=postgres'
+connection_factory = None, cursor_factory = None
+kwargs = {'database': 'postgres', 'host': 'db', 'password': 'postgres', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+[1m[31mE       psycopg2.OperationalError: could not translate host name "db" to address: Temporary failure in name resolution[0m
+
+[1m[31m/usr/local/lib/python3.10/site-packages/psycopg2/__init__.py[0m:122: OperationalError
+
+[33mThe above exception was the direct cause of the following exception:[0m
+
+request = <SubRequest '_django_db_marker' for <Function test_get>>
+
+    @pytest.fixture(autouse=True)
+    def _django_db_marker(request) -> None:
+        """Implement the django_db marker, internal to pytest-django.
+    
+        This will dynamically request the ``db``, ``transactional_db`` or
+        ``django_db_reset_sequences`` fixtures as required by the django_db marker.
+        """
+        marker = request.node.get_closest_marker("django_db")
+        if marker:
+            transaction, reset_sequences, databases = validate_django_db(marker)
+    
+            # TODO: Use pytest Store (item.store) once that's stable.
+            request.node._pytest_django_databases = databases
+    
+            if reset_sequences:
+                request.getfixturevalue("django_db_reset_sequences")
+            elif transaction:
+                request.getfixturevalue("transactional_db")
+            else:
+>               request.getfixturevalue("db")
+
+[1m[31m/usr/local/lib/python3.10/site-packages/pytest_django/plugin.py[0m:470: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+[1m[31m/usr/local/lib/python3.10/site-packages/pytest_django/fixtures.py[0m:117: in django_db_setup
+    db_cfg = setup_databases(
+[1m[31m/usr/local/lib/python3.10/site-packages/django/test/utils.py[0m:179: in setup_databases
+    connection.creation.create_test_db(
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/creation.py[0m:57: in create_test_db
+    self._create_test_db(verbosity, autoclobber, keepdb)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/creation.py[0m:191: in _create_test_db
+    with self._nodb_cursor() as cursor:
+[1m[31m/usr/local/lib/python3.10/contextlib.py[0m:135: in __enter__
+    return next(self.gen)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/postgresql/base.py[0m:301: in _nodb_cursor
+    with super()._nodb_cursor() as cursor:
+[1m[31m/usr/local/lib/python3.10/contextlib.py[0m:135: in __enter__
+    return next(self.gen)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:620: in _nodb_cursor
+    with conn.cursor() as cursor:
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: in inner
+    return func(*args, **kwargs)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:259: in cursor
+    return self._cursor()
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:235: in _cursor
+    self.ensure_connection()
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: in inner
+    return func(*args, **kwargs)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:218: in ensure_connection
+    with self.wrap_database_errors:
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/utils.py[0m:90: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:219: in ensure_connection
+    self.connect()
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: in inner
+    return func(*args, **kwargs)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:200: in connect
+    self.connection = self.get_new_connection(conn_params)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: in inner
+    return func(*args, **kwargs)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/postgresql/base.py[0m:187: in get_new_connection
+    connection = Database.connect(**conn_params)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'user=postgres password=postgres host=db port=5432 dbname=postgres'
+connection_factory = None, cursor_factory = None
+kwargs = {'database': 'postgres', 'host': 'db', 'password': 'postgres', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+[1m[31mE       django.db.utils.OperationalError: could not translate host name "db" to address: Temporary failure in name resolution[0m
+
+[1m[31m/usr/local/lib/python3.10/site-packages/psycopg2/__init__.py[0m:122: OperationalError
+[31m[1m______ ERROR at setup of TestGetServiceAreaAPIView.test_get_by_kilometer _______[0m
+
+self = <django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>
+
+    @async_unsafe
+    def ensure_connection(self):
+        """Guarantee that a connection to the database is established."""
+        if self.connection is None:
+            with self.wrap_database_errors:
+>               self.connect()
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:219: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>,)
+kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+        if not os.environ.get('DJANGO_ALLOW_ASYNC_UNSAFE'):
+            # Detect a running event loop in this thread.
+            try:
+                event_loop = get_running_loop()
+            except RuntimeError:
+                pass
+            else:
+                if PY37 or event_loop.is_running():
+                    raise SynchronousOnlyOperation(message)
+        # Pass onwards.
+>       return func(*args, **kwargs)
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>
+
+    @async_unsafe
+    def connect(self):
+        """Connect to the database. Assume that the connection is closed."""
+        # Check for invalid configurations.
+        self.check_settings()
+        # In case the previous connection was closed while in an atomic block
+        self.in_atomic_block = False
+        self.savepoint_ids = []
+        self.needs_rollback = False
+        # Reset parameters defining when to close the connection
+        max_age = self.settings_dict['CONN_MAX_AGE']
+        self.close_at = None if max_age is None else time.monotonic() + max_age
+        self.closed_in_transaction = False
+        self.errors_occurred = False
+        # Establish the connection
+        conn_params = self.get_connection_params()
+>       self.connection = self.get_new_connection(conn_params)
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:200: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>, {'database': 'postgres', 'host': 'db', 'password': 'postgres', 'port': 5432, ...})
+kwargs = {}
+
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+        if not os.environ.get('DJANGO_ALLOW_ASYNC_UNSAFE'):
+            # Detect a running event loop in this thread.
+            try:
+                event_loop = get_running_loop()
+            except RuntimeError:
+                pass
+            else:
+                if PY37 or event_loop.is_running():
+                    raise SynchronousOnlyOperation(message)
+        # Pass onwards.
+>       return func(*args, **kwargs)
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <django.db.backends.postgresql.base.DatabaseWrapper object at 0x7f9646ecf8e0>
+conn_params = {'database': 'postgres', 'host': 'db', 'password': 'postgres', 'port': 5432, ...}
+
+    @async_unsafe
+    def get_new_connection(self, conn_params):
+>       connection = Database.connect(**conn_params)
+
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/postgresql/base.py[0m:187: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'user=postgres password=postgres host=db port=5432 dbname=postgres'
+connection_factory = None, cursor_factory = None
+kwargs = {'database': 'postgres', 'host': 'db', 'password': 'postgres', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+[1m[31mE       psycopg2.OperationalError: could not translate host name "db" to address: Temporary failure in name resolution[0m
+
+[1m[31m/usr/local/lib/python3.10/site-packages/psycopg2/__init__.py[0m:122: OperationalError
+
+[33mThe above exception was the direct cause of the following exception:[0m
+
+request = <SubRequest '_django_db_marker' for <Function test_get_by_kilometer>>
+
+    @pytest.fixture(autouse=True)
+    def _django_db_marker(request) -> None:
+        """Implement the django_db marker, internal to pytest-django.
+    
+        This will dynamically request the ``db``, ``transactional_db`` or
+        ``django_db_reset_sequences`` fixtures as required by the django_db marker.
+        """
+        marker = request.node.get_closest_marker("django_db")
+        if marker:
+            transaction, reset_sequences, databases = validate_django_db(marker)
+    
+            # TODO: Use pytest Store (item.store) once that's stable.
+            request.node._pytest_django_databases = databases
+    
+            if reset_sequences:
+                request.getfixturevalue("django_db_reset_sequences")
+            elif transaction:
+                request.getfixturevalue("transactional_db")
+            else:
+>               request.getfixturevalue("db")
+
+[1m[31m/usr/local/lib/python3.10/site-packages/pytest_django/plugin.py[0m:470: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+[1m[31m/usr/local/lib/python3.10/site-packages/pytest_django/fixtures.py[0m:117: in django_db_setup
+    db_cfg = setup_databases(
+[1m[31m/usr/local/lib/python3.10/site-packages/django/test/utils.py[0m:179: in setup_databases
+    connection.creation.create_test_db(
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/creation.py[0m:57: in create_test_db
+    self._create_test_db(verbosity, autoclobber, keepdb)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/creation.py[0m:191: in _create_test_db
+    with self._nodb_cursor() as cursor:
+[1m[31m/usr/local/lib/python3.10/contextlib.py[0m:135: in __enter__
+    return next(self.gen)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/postgresql/base.py[0m:301: in _nodb_cursor
+    with super()._nodb_cursor() as cursor:
+[1m[31m/usr/local/lib/python3.10/contextlib.py[0m:135: in __enter__
+    return next(self.gen)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:620: in _nodb_cursor
+    with conn.cursor() as cursor:
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: in inner
+    return func(*args, **kwargs)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:259: in cursor
+    return self._cursor()
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:235: in _cursor
+    self.ensure_connection()
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: in inner
+    return func(*args, **kwargs)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:218: in ensure_connection
+    with self.wrap_database_errors:
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/utils.py[0m:90: in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:219: in ensure_connection
+    self.connect()
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: in inner
+    return func(*args, **kwargs)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/base/base.py[0m:200: in connect
+    self.connection = self.get_new_connection(conn_params)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/utils/asyncio.py[0m:33: in inner
+    return func(*args, **kwargs)
+[1m[31m/usr/local/lib/python3.10/site-packages/django/db/backends/postgresql/base.py[0m:187: in get_new_connection
+    connection = Database.connect(**conn_params)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+dsn = 'user=postgres password=postgres host=db port=5432 dbname=postgres'
+connection_factory = None, cursor_factory = None
+kwargs = {'database': 'postgres', 'host': 'db', 'password': 'postgres', 'port': 5432, ...}
+kwasync = {}
+
+    def connect(dsn=None, connection_factory=None, cursor_factory=None, **kwargs):
+        """
+        Create a new database connection.
+    
+        The connection parameters can be specified as a string:
+    
+            conn = psycopg2.connect("dbname=test user=postgres password=secret")
+    
+        or using a set of keyword arguments:
+    
+            conn = psycopg2.connect(database="test", user="postgres", password="secret")
+    
+        Or as a mix of both. The basic connection parameters are:
+    
+        - *dbname*: the database name
+        - *database*: the database name (only as keyword argument)
+        - *user*: user name used to authenticate
+        - *password*: password used to authenticate
+        - *host*: database host address (defaults to UNIX socket if not provided)
+        - *port*: connection port number (defaults to 5432 if not provided)
+    
+        Using the *connection_factory* parameter a different class or connections
+        factory can be specified. It should be a callable object taking a dsn
+        argument.
+    
+        Using the *cursor_factory* parameter, a new default cursor factory will be
+        used by cursor().
+    
+        Using *async*=True an asynchronous connection will be created. *async_* is
+        a valid alias (for Python versions where ``async`` is a keyword).
+    
+        Any other keyword parameter will be passed to the underlying client
+        library: the list of supported parameters depends on the library version.
+    
+        """
+        kwasync = {}
+        if 'async' in kwargs:
+            kwasync['async'] = kwargs.pop('async')
+        if 'async_' in kwargs:
+            kwasync['async_'] = kwargs.pop('async_')
+    
+        dsn = _ext.make_dsn(dsn, **kwargs)
+>       conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+[1m[31mE       django.db.utils.OperationalError: could not translate host name "db" to address: Temporary failure in name resolution[0m
+
+[1m[31m/usr/local/lib/python3.10/site-packages/psycopg2/__init__.py[0m:122: OperationalError
+[33m=============================== warnings summary ===============================[0m
+adventure/tests/test_03_controllers.py::TestGetVehicleAPIView::test_get
+  /usr/local/lib/python3.10/site-packages/django/db/backends/postgresql/base.py:304: RuntimeWarning: Normally Django will use a connection to the 'postgres' database to avoid running initialization queries against the production database when it's not needed (for example, when running tests). Django was unable to create a connection to the 'postgres' database and will use the first PostgreSQL database instead.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/warnings.html
+=========================== short test summary info ============================
+ERROR adventure/tests/test_03_controllers.py::TestGetVehicleAPIView::test_get
+ERROR adventure/tests/test_03_controllers.py::TestGetVehicleAPIView::test_get_by_license_plate
+ERROR adventure/tests/test_03_controllers.py::TestGetServiceAreaAPIView::test_get
+ERROR adventure/tests/test_03_controllers.py::TestGetServiceAreaAPIView::test_get_by_kilometer
+[31m============== [32m16 passed[0m, [33m1 skipped[0m, [33m1 warning[0m, [31m[1m4 errors[0m[31m in 1.03s[0m[31m ==============[0m
